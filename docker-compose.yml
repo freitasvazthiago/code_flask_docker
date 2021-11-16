@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+
+### Flask #############################################
+  flask:
+    build:
+        context: ../code_flask
+        dockerfile: Dockerfile
+    container_name: webapp-flask
+    volumes:
+      - ../code_flask/:/code_flask/
+
+## NGINX Server #############################################
+  nginx:
+    container_name: my-nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    volumes:
+      - ../:/var/www
+      - ./logs/nginx/:/var/log/nginx
+      - ./nginx/sites/:/etc/nginx/conf.d/
+    ports:
+      - "80:80"
+      - "443:443"
+      - 5001:5001
+    depends_on:
+      - flask
